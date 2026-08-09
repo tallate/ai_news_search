@@ -31,6 +31,13 @@
 
 ## 🧭 工作流程
 
+<p align="center">
+  <img src="assets/flowchart.svg" alt="ai-news-search 执行流程图" width="880" />
+</p>
+
+<details>
+<summary>交互式 Mermaid 版本（GitHub 支持缩放）</summary>
+
 ```mermaid
 flowchart LR
   A[用户提问] --> B{并行采集}
@@ -46,6 +53,8 @@ flowchart LR
   E --> F[按主题分组的中文摘要]
   F --> G[3-5 条趋势]
 ```
+
+</details>
 
 > 五条轨道并行执行，最后统一合并、交叉核验、排序——不是一个线性读取通道。
 
@@ -226,4 +235,3 @@ A: 本项目由一段视频录像 + 本机 Folo 数据重建：结构、规则�
 ---
 
 > **版本说明**：本项目于 2026 年 8 月根据原始「单文档整理」的视频录像与本机 Folo 订阅库重建。视频为滚动屏幕录像，无法逐字还原代码，脚本按录像所示文件清单与文档描述重新实现；references 中的账号与 feed 列表来自本地真实数据。欢迎对照原版补充修正。
-

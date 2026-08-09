@@ -1,0 +1,119 @@
+<svg width="1120" height="820" viewBox="0 0 1120 820" xmlns="http://www.w3.org/2000/svg" font-family="'PingFang SC','Microsoft YaHei',Arial,sans-serif">
+  <rect width="1120" height="820" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+    <marker id="arrowAccent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1"/>
+    </marker>
+  </defs>
+
+  <!-- Step 1: user request -->
+  <rect x="340" y="24" width="440" height="54" rx="12" fill="#eef2ff" stroke="#6366f1" stroke-width="2"/>
+  <text x="560" y="48" text-anchor="middle" font-size="17" font-weight="700" fill="#3730a3">用户提问</text>
+  <text x="560" y="66" text-anchor="middle" font-size="12" fill="#6366f1">搜集最近 7 天 AI 新闻 · 按主题分组 · 附来源与趋势</text>
+  <line x1="560" y1="78" x2="560" y2="122" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowAccent)"/>
+
+  <!-- Step 2: parse request -->
+  <rect x="300" y="126" width="520" height="54" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+  <text x="560" y="149" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">解析请求</text>
+  <text x="560" y="168" text-anchor="middle" font-size="12" fill="#475569">时间窗口（默认 7 天） · 主题关键词 · 来源偏好</text>
+  <line x1="560" y1="180" x2="560" y2="216" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowAccent)"/>
+
+  <!-- Step 3: parallel tracks -->
+  <text x="560" y="240" text-anchor="middle" font-size="13" font-weight="700" fill="#6366f1">并行采集 · 五条轨道</text>
+  <line x1="120" y1="256" x2="1000" y2="256" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="560" y1="222" x2="560" y2="256" stroke="#6366f1" stroke-width="2"/>
+
+  <g>
+    <!-- track 1 -->
+    <line x1="130" y1="256" x2="130" y2="282" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="30" y="286" width="200" height="156" rx="14" fill="#ffffff" stroke="#22d3ee" stroke-width="2"/>
+    <rect x="30" y="286" width="200" height="36" rx="14" fill="#ecfeff"/>
+    <text x="130" y="309" text-anchor="middle" font-size="14" font-weight="700" fill="#0e7490">官方公告</text>
+    <text x="130" y="327" text-anchor="middle" font-size="11" fill="#155e75">公开来源</text>
+    <text x="44" y="352" font-size="12" fill="#334155">· 官网博客与公告</text>
+    <text x="44" y="374" font-size="12" fill="#334155">· 科技媒体</text>
+    <text x="44" y="396" font-size="12" fill="#334155">· Web 搜索</text>
+    <text x="44" y="420" font-size="12" fill="#334155">· 研究论文 / arXiv</text>
+
+    <!-- track 2 -->
+    <line x1="352" y1="256" x2="352" y2="282" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="252" y="286" width="200" height="156" rx="14" fill="#ffffff" stroke="#818cf8" stroke-width="2"/>
+    <rect x="252" y="286" width="200" height="36" rx="14" fill="#eef2ff"/>
+    <text x="352" y="309" text-anchor="middle" font-size="14" font-weight="700" fill="#4338ca">RSS / Folo 订阅</text>
+    <text x="352" y="327" text-anchor="middle" font-size="11" fill="#3730a3">订阅雷达</text>
+    <text x="266" y="352" font-size="12" fill="#334155">· 官方 RSS 源</text>
+    <text x="266" y="374" font-size="12" fill="#334155">· 个性化订阅列表</text>
+    <text x="266" y="396" font-size="12" fill="#334155">· 本机 Folo 数据</text>
+    <text x="266" y="420" font-size="12" fill="#334155">· 补充公开 feed</text>
+
+    <!-- track 3 -->
+    <line x1="574" y1="256" x2="574" y2="282" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="474" y="286" width="200" height="156" rx="14" fill="#ffffff" stroke="#34d399" stroke-width="2"/>
+    <rect x="474" y="286" width="200" height="36" rx="14" fill="#ecfdf5"/>
+    <text x="574" y="309" text-anchor="middle" font-size="14" font-weight="700" fill="#047857">GitHub 雷达</text>
+    <text x="574" y="327" text-anchor="middle" font-size="11" fill="#065f46">开源动态</text>
+    <text x="488" y="352" font-size="12" fill="#334155">· 24h star 增长</text>
+    <text x="488" y="374" font-size="12" fill="#334155">· 新仓库与活跃度</text>
+    <text x="488" y="396" font-size="12" fill="#334155">· AI 关键词族</text>
+    <text x="488" y="420" font-size="12" fill="#334155">· 低质量识别</text>
+
+    <!-- track 4 -->
+    <line x1="796" y1="256" x2="796" y2="282" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="696" y="286" width="200" height="156" rx="14" fill="#ffffff" stroke="#f472b6" stroke-width="2"/>
+    <rect x="696" y="286" width="200" height="36" rx="14" fill="#fdf2f8"/>
+    <text x="796" y="309" text-anchor="middle" font-size="14" font-weight="700" fill="#be185d">X / Twitter</text>
+    <text x="796" y="327" text-anchor="middle" font-size="11" fill="#9d174d">社媒信号</text>
+    <text x="710" y="352" font-size="12" fill="#334155">· 高信号账号</text>
+    <text x="710" y="374" font-size="12" fill="#334155">· Cookie 校验</text>
+    <text x="710" y="396" font-size="12" fill="#334155">· xgo.ing 桥接</text>
+    <text x="710" y="420" font-size="12" fill="#334155">· 浏览器采集模式</text>
+
+    <!-- track 5 -->
+    <line x1="990" y1="256" x2="990" y2="282" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="890" y="286" width="200" height="156" rx="14" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="890" y="286" width="200" height="36" rx="14" fill="#fffbeb"/>
+    <text x="990" y="309" text-anchor="middle" font-size="14" font-weight="700" fill="#b45309">HN / Reddit</text>
+    <text x="990" y="327" text-anchor="middle" font-size="11" fill="#92400e">社区讨论</text>
+    <text x="904" y="352" font-size="12" fill="#334155">· 社区热帖</text>
+    <text x="904" y="374" font-size="12" fill="#334155">· 开发者讨论</text>
+    <text x="904" y="396" font-size="12" fill="#334155">· 早期信号</text>
+    <text x="904" y="420" font-size="12" fill="#334155">· 观点与争论</text>
+  </g>
+
+  <!-- merge arrows -->
+  <line x1="130" y1="442" x2="130" y2="474" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="352" y1="442" x2="352" y2="474" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="574" y1="442" x2="574" y2="474" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="796" y1="442" x2="796" y2="474" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="990" y1="442" x2="990" y2="474" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="130" y1="474" x2="990" y2="474" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="560" y1="474" x2="560" y2="506" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowAccent)"/>
+
+  <!-- Step 4: normalize -->
+  <rect x="300" y="510" width="520" height="54" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+  <text x="560" y="533" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">归一化与去重</text>
+  <text x="560" y="552" text-anchor="middle" font-size="12" fill="#475569">标题 · 链接 · 时间 · 摘要 · 重要性 · 分类 · 跨源去重</text>
+  <line x1="560" y1="564" x2="560" y2="600" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowAccent)"/>
+
+  <!-- Step 5: cross-check -->
+  <rect x="300" y="604" width="520" height="54" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+  <text x="560" y="627" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">交叉核验与排序</text>
+  <text x="560" y="646" text-anchor="middle" font-size="12" fill="#475569">官方优先 · 1-2 个独立来源验证 · 来源质量 / 新鲜度 / 社区动量</text>
+  <line x1="560" y1="658" x2="560" y2="694" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowAccent)"/>
+
+  <!-- Step 6: output -->
+  <rect x="180" y="698" width="560" height="66" rx="14" fill="#eef2ff" stroke="#6366f1" stroke-width="2"/>
+  <text x="460" y="722" text-anchor="middle" font-size="15" font-weight="700" fill="#3730a3">中文摘要输出</text>
+  <text x="460" y="744" text-anchor="middle" font-size="12" fill="#6366f1">Hot Topics · Viewpoints · Opportunities · GitHub Radar · 3-5 条趋势</text>
+
+  <!-- optional report -->
+  <line x1="740" y1="731" x2="820" y2="731" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="824" y="700" width="250" height="62" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="949" y="724" text-anchor="middle" font-size="14" font-weight="700" fill="#475569">可选</text>
+  <text x="949" y="743" text-anchor="middle" font-size="12" fill="#64748b">Markdown / HTML 报告</text>
+</svg>
+

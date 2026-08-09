@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI News Search"
+  short_description: "AI news search and summary generation"
+  default_prompt: "Use ai-news-search skill to search for today's latest AI news, covering model releases, company updates, research, open source, policy, and applications."

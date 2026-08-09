@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Secrets — never commit X cookies
+x_cookies.json
+
+# Local analysis artifacts (frames / OCR outputs)
+tmp_video/
+video_extract/
+

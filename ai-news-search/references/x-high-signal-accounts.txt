@@ -1,0 +1,104 @@
+# High-signal X/Twitter accounts for AI news
+# Exported from local Folo subscriptions (best-effort, June 2026 snapshot).
+# Priority order: official accounts -> core people -> community accounts.
+
+## Official Accounts / Model Labs
+- @OpenAI
+- @OpenAIDevs
+- @AnthropicAI
+- @Alibaba_Qwen
+- @TXhunyuan (Tencent Hunyuan)
+- @Skywork_ai
+- @GroqInc
+- @googleaidevs
+- @GeminiApp
+- @grok (xAI)
+- @NotebookLM
+- @ManusAI_HQ
+- @ollama
+- @mem0ai
+
+## Core People
+- @gdb (Greg Brockman, OpenAI)
+- @sama (Sam Altman)
+- @drfeifei (Fei-Fei Li)
+- @ylecun (Yann LeCun)
+- @lexfridman
+- @amasad (Amjad Masad, Replit)
+- @andrewchen (a16z speedrun)
+- @lennysan
+- @rowancheung
+- @svpino
+- @thejustinwelsh
+- @satyanadella
+- @sundarpichai
+- @AravSrinivas (Perplexity)
+- @DrJimFan (Jim Fan, NVIDIA)
+- @GaryMarcus
+- @_akhaliq (AK, Hugging Face research)
+- @_philschmid (Philipp Schmid)
+- @amanrsanger
+- @ericzakariasson
+- @akothari
+- @andrewmayne
+- @joulee
+
+## AI News / Community
+- @AiBreakfast
+- @heyBarsee
+- @op7418 (歸藏)
+- @dotey (宝玉)
+- @vista8
+- @oran_ge
+- @shao__meng
+- @lijigang_com
+- @trq212
+- @akshitwt
+- @IntuitMachine
+- @LandingAI
+- @lovart_ai
+- @Eigent_AI
+- @CamelAIOrg
+- @DeryaTR_
+- @MostafaRohani
+- @aaditsh
+- @antonosika
+- @nuwandavek
+- @wwwgoubuli
+- @Yangyixxxx
+- @Gorden_Sun
+- @ICPCNews
+- @lifesinger
+- @ericjing_ai
+- @apolloaievals
+- @Tuwaiq
+- @zoink
+- @orchidsapp
+
+## AI Coding / Agent Ecosystem
+- @cursor_ai
+- @cline
+- @browser_use
+- @LangChainAI
+- @diabrowser
+- @genspark_ai
+- @mem0ai
+- @tldraw
+- @figma
+- @NotionHQ
+- @ycombinator
+
+## Cross-domain / Optional
+- @naval
+- @RayDalio
+- @INSEAD
+- @sundarpichai
+- @satyanadella
+
+## Collection Notes
+- Sample order: 2-3 official accounts first, then 1-2 core people,
+  then 2-3 community accounts.
+- Collect 10-20 high-signal samples per account, then cross-check against
+  public news sources.
+- Prefer official account timelines over Home feed for recent AI trends.
+

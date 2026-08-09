@@ -66,7 +66,7 @@ flowchart LR
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/<your-name>/last_7_days_news.git
+git clone https://github.com/tallate/ai_news_search.git
 
 # 2. 安装到 Codex skills 目录
 mkdir -p ~/.codex/skills

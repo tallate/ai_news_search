@@ -6,7 +6,7 @@
 
 **最近 7 天 AI 新闻雷达 · 多源采集 · 交叉核验 · 一键出报告**
 
-一个面向 Codex / Claude 等 Agent 的 AI 新闻检索 Skill：从官方公告、RSS/Folo 订阅、GitHub 热门仓库、X/Twitter 与 HN/Reddit 并行采集 AI 新闻，归一化去重后生成带来源链接、按主题分组的中文摘要，并给出 3-5 条值得关注的趋势。
+一个面向 Codex / Claude 等 Agent 的 AI 新闻检索 Skill：将官方公告、RSS/Folo 订阅、GitHub 热门仓库、X/Twitter 与 HN/Reddit 拆分给多个子代理并行采集，归一化去重后生成带来源链接、按主题分组的中文摘要，并给出 3-5 条值得关注的趋势。
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Platform: macOS](https://img.shields.io/badge/platform-macOS-lightgrey.svg)]()
@@ -20,7 +20,8 @@
 
 ## ✨ 特性
 
-- **五轨并行采集**：官方公告 / RSS·Folo / GitHub 雷达 / X·Twitter / HN·Reddit，互不阻塞，最后合并交叉核验
+- **多子代理并行采集**：按信源拆分官方/研究、RSS·社区、GitHub、X/Twitter 等 worker，互不阻塞，最后由主代理合并交叉核验
+- **自适应并发**：根据当前可用的 subagent 槽位创建 2-4 个 worker；单一信源的小问题则直接搜索
 - **默认 7 天窗口**：优先覆盖过去 24 小时的重要进展，时间窗口可随用户需求调整
 - **结构化输出**：Hot Topics · Viewpoints · Opportunities · GitHub Radar · 一页纸摘要，每条含来源链接、发布时间、重要性说明
 - **中文友好**：默认按主题分组输出中文摘要，末尾附 3-5 条趋势
@@ -41,10 +42,11 @@
 ```mermaid
 flowchart LR
   A[用户提问] --> B{并行采集}
-  B --> C1[官方公告/公开来源]
-  B --> C2[RSS/Folo 订阅]
-  B --> C3[GitHub 雷达]
-  B --> C4[X/Twitter 信号]
+  B --> W[创建并行 subagents]
+  W --> C1[官方公告/研究]
+  W --> C2[RSS/Folo/社区]
+  W --> C3[GitHub 雷达]
+  W --> C4[X/Twitter 信号]
   C1 --> D[归一化与去重]
   C2 --> D
   C3 --> D
@@ -56,7 +58,7 @@ flowchart LR
 
 </details>
 
-> 五条轨道并行执行，最后统一合并、交叉核验、排序——不是一个线性读取通道。
+> 多个 worker 并行执行，主代理统一等待、合并、去重、交叉核验和排序；没有足够并发槽位时自动减少 worker 数量。
 
 ---
 
@@ -151,7 +153,7 @@ ai_news_search/
     │   ├── generate_report.py            # Markdown/HTML 报告生成
     │   ├── template.md                   # 一页纸摘要模板
     │   └── template.html                 # HTML 报告模板
-    └── README.html                   # 备用 HTML 版项目说明
+    └── README.html                   # 备用 HTML 版项目说明（可选）
 ```
 
 ---

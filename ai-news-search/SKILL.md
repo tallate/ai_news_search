@@ -55,9 +55,40 @@ Use these families, adjusted to the user's time window (default: last 7 days, pr
 - X/Twitter: `from:{account} since:YYYY-MM-DD` and keyword searches
 - HN / Reddit: `site:news.ycombinator.com` / `site:reddit.com`
 
-## Collection Workflow
+## Multi-Agent Orchestration
 
-Follow this multi-track approach in parallel:
+For comprehensive or multi-source requests, use subagents as the default execution model:
+
+1. Split collection into independent source tracks before searching.
+2. Inspect the available collaboration capacity and create as many useful subagents as the remaining slots allow. Prefer 2-4 concurrent workers; never create more workers than independent tracks.
+3. Give each subagent one bounded track, the user's topic and time window, the normalized item schema, and a completion criterion. Tell it to return findings to the parent rather than writing the final report.
+4. Start all workers before waiting. Keep one source family owned by one worker so searches do not duplicate each other.
+5. While workers run, let the parent prepare queries, ranking criteria, or cover an unassigned track. The parent owns synthesis.
+6. Wait for every worker, follow up once on missing evidence when useful, then merge, deduplicate, cross-check, rank, and write the final response.
+
+Use this default assignment when capacity permits:
+
+- **Official/research worker** — official company pages, primary announcements, papers, reputable public reporting.
+- **RSS/community worker** — RSS/Folo, Hacker News, Reddit, practitioner blogs, and corroborating community signals.
+- **GitHub worker** — new and fast-rising repositories using `references/github-hot-repos.md` and the bundled scripts.
+- **X worker** — only when the request needs social signals and authenticated access is available.
+
+For a narrow request that needs only one source family, search directly without subagents. When subagent tools are unavailable, execute the same tracks with parallel tool calls and continue normally. Report unavailable or failed tracks as coverage limits; do not invent their findings.
+
+### Worker return contract
+
+Require each worker to return:
+
+- coverage window, queries/source families checked, and any access limitation;
+- 3-10 normalized candidate items with title, URL, source/author, publication time, summary, engagement when available, category, and importance;
+- primary-source status and corroborating links for high-importance claims;
+- a short list of duplicates, weak claims, or facts needing parent verification.
+
+A worker is complete only when every returned factual item has a stable source link and timestamp, or is explicitly marked uncertain.
+
+## Collection Tracks
+
+Assign these tracks to subagents using the orchestration above:
 
 ### Track 1: Official & Public Sources
 

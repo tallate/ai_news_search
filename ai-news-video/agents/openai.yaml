@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI News Video"
+  short_description: "Turn AI news into narrated vertical slide videos"
+  default_prompt: "Use ai-news-video to turn a structured AI news brief into PPTX information cards, narration, subtitles, and a review-ready vertical MP4."

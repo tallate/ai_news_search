@@ -22,6 +22,7 @@
 
 - **多子代理并行采集**：按信源拆分官方/研究、RSS·社区、GitHub、X/Twitter 等 worker，互不阻塞，最后由主代理合并交叉核验
 - **自适应并发**：根据当前可用的 subagent 槽位创建 2-4 个 worker；单一信源的小问题则直接搜索
+- **视频创作工作流**：通过 `ai-news-video` 将新闻简报转换为 9:16 PPT 信息卡、中文旁白、字幕和可审核 MP4
 - **默认 7 天窗口**：优先覆盖过去 24 小时的重要进展，时间窗口可随用户需求调整
 - **结构化输出**：Hot Topics · Viewpoints · Opportunities · GitHub Radar · 一页纸摘要，每条含来源链接、发布时间、重要性说明
 - **中文友好**：默认按主题分组输出中文摘要，末尾附 3-5 条趋势
@@ -113,6 +114,16 @@ python3 ai-news-search/scripts/generate_report.py items.json report.md
 python3 ai-news-search/scripts/generate_report.py items.json report.html --html
 ```
 
+### 生成带旁白的新闻卡片视频
+
+将 `ai-news-search` 输出的结构化新闻交给 `ai-news-video`，生成可编辑 PPTX、渲染卡片、旁白音频、字幕和竖屏 MP4。默认只生成审核包，不自动发布：
+
+```text
+使用 ai-news-video，将这份 AI 新闻简报制作成 45-90 秒的中文竖屏视频。
+先生成 9:16 PPT 信息卡片，再渲染成图片，生成旁白和字幕，最后合成 MP4。
+输出 slides.pptx、narration.mp3、subtitles.srt、video.mp4 和 publish.md。
+```
+
 ### X / Folo 采集准备
 
 ```bash
@@ -154,6 +165,14 @@ ai_news_search/
     │   ├── template.md                   # 一页纸摘要模板
     │   └── template.html                 # HTML 报告模板
     └── README.html                   # 备用 HTML 版项目说明（可选）
+```
+
+视频创作 skill 位于：
+
+```text
+ai-news-video/
+├── SKILL.md                          # PPT → 旁白 → 字幕 → MP4 工作流
+└── agents/openai.yaml                # Skill UI 元数据
 ```
 
 ---

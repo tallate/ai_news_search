@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI News Xiaohongshu"
+  short_description: "制作并准备发布小红书 AI 新闻图文早报"
+  default_prompt: "将已核验 AI 新闻制作成精美的小红书 9:16 图文轮播，并在最终发布前请求确认。"

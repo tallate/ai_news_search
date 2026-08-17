@@ -14,3 +14,4 @@ folo-subscriptions*.opml
 # Local analysis artifacts (frames / OCR outputs)
 tmp_video/
 video_extract/
+output/

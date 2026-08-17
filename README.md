@@ -9,7 +9,7 @@
 一个面向 Codex / Claude 等 Agent 的 AI 新闻检索 Skill：将官方公告、RSS/Folo 订阅、GitHub 热门仓库、X/Twitter 与 HN/Reddit 拆分给多个子代理并行采集，归一化去重后生成带来源链接、按主题分组的中文摘要，并给出 3-5 条值得关注的趋势。
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Platform: macOS](https://img.shields.io/badge/platform-macOS-lightgrey.svg)]()
+[![Platform: Windows/macOS](https://img.shields.io/badge/platform-Windows%20%2F%20macOS-lightgrey.svg)]()
 [![Python: 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)]()
 [![Type: Codex Skill](https://img.shields.io/badge/type-Codex%20Skill-8A2BE2.svg)]()
 [![Status: Beta](https://img.shields.io/badge/status-beta-yellow.svg)]()
@@ -22,7 +22,7 @@
 
 - **多子代理并行采集**：按信源拆分官方/研究、RSS·社区、GitHub、X/Twitter 等 worker，互不阻塞，最后由主代理合并交叉核验
 - **自适应并发**：根据当前可用的 subagent 槽位创建 2-4 个 worker；单一信源的小问题则直接搜索
-- **视频创作工作流**：通过 `ai-news-video` 将新闻简报转换为 9:16 PPT 信息卡、中文旁白、字幕和可审核 MP4
+- **小红书图文工作流**：通过 `ai-news-xhs` 将新闻简报转换为经过视觉检查的 9:16 PPT 信息卡、PNG 轮播和发布文案
 - **默认 7 天窗口**：优先覆盖过去 24 小时的重要进展，时间窗口可随用户需求调整
 - **结构化输出**：Hot Topics · Viewpoints · Opportunities · GitHub Radar · 一页纸摘要，每条含来源链接、发布时间、重要性说明
 - **中文友好**：默认按主题分组输出中文摘要，末尾附 3-5 条趋势
@@ -114,21 +114,22 @@ python3 ai-news-search/scripts/generate_report.py items.json report.md
 python3 ai-news-search/scripts/generate_report.py items.json report.html --html
 ```
 
-### 生成带旁白的新闻卡片视频
+### 生成小红书图文早报
 
-将 `ai-news-search` 输出的结构化新闻交给 `ai-news-video`，生成可编辑 PPTX、渲染卡片、旁白音频、字幕和竖屏 MP4。默认只生成审核包，不自动发布：
+将 `ai-news-search` 输出的结构化新闻交给 `ai-news-xhs`，生成可编辑 PPTX、渲染后的 9:16 PNG 轮播与发布文案。浏览器可以上传并填写内容，但最终公开发布必须人工确认：
 
 ```text
-使用 ai-news-video，将这份 AI 新闻简报制作成 45-90 秒的中文竖屏视频。
-先生成 9:16 PPT 信息卡片，再渲染成图片，生成旁白和字幕，最后合成 MP4。
-输出 slides.pptx、narration.mp3、subtitles.srt、video.mp4 和 publish.md。
+使用 ai-news-xhs，将这份 AI 新闻简报制作成小红书 9:16 图文轮播。
+按 frontend-design 规则确定独特视觉方向，输出 slides.pptx、PNG 卡片和 publish.md，
+登录小红书后上传并填写，停在最终发布确认前。
 ```
 
 ### X / Folo 采集准备
 
 ```bash
-# 校验并刷新 X cookies（首次会打开浏览器引导登录）
-./ai-news-search/scripts/ensure_X_cookies.sh
+# Windows：打开隔离的 X 登录窗口并导出 cookies
+powershell -File ai-news-search/scripts/open_X_login_cdp.ps1
+python ai-news-search/scripts/export_X_cookies_cdp.py
 
 # 验证 cookie 文件
 python3 ai-news-search/scripts/validate_X_cookies.py
@@ -153,7 +154,7 @@ ai_news_search/
     │   ├── x-high-signal-accounts.txt  # 高信号 X 账号清单（Folo 导出）
     │   └── github-hot-repos.md      # GitHub 雷达关键词、排序与核验规则
     ├── scripts/
-    │   ├── export_folo_subscriptions.py  # Folo 订阅导出（占位，可升级为真实导出）
+    │   ├── export_folo_subscriptions.py  # 通过官方 Folo CLI 导出订阅
     │   ├── export_X_cookies.py           # 从 Chrome/Edge 导出 X cookies（macOS）
     │   ├── validate_X_cookies.py         # 校验 cookie 文件
     │   ├── ensure_X_cookies.sh           # 校验 → 登录(CDP) → 导出 → 再校验
@@ -167,11 +168,11 @@ ai_news_search/
     └── README.html                   # 备用 HTML 版项目说明（可选）
 ```
 
-视频创作 skill 位于：
+小红书图文 skill 位于：
 
 ```text
-ai-news-video/
-├── SKILL.md                          # PPT → 旁白 → 字幕 → MP4 工作流
+ai-news-xhs/
+├── SKILL.md                          # 新闻 → PPT → PNG轮播 → 浏览器发布草稿
 └── agents/openai.yaml                # Skill UI 元数据
 ```
 
@@ -204,7 +205,7 @@ ai-news-video/
 
 - X 内容优先走 **xgo.ing RSS 桥接**：公开账号无需登录即可读取，已验证可返回真实推文流
 - 需要完整时间线时使用 **X cookies**（`x_cookies.json`），脚本支持从 Chrome/Edge 一键导出并在失效时自动刷新
-- Folo 订阅列表可通过三种方式获取：官方 API `api.follow.is/subscriptions/export`（需登录）、App 内导出备份（xml）、或解析本地 IndexedDB
+- Folo 优先使用官方 CLI：`npx --yes folocli@latest`。先以 `whoami` 验证，再读取 `timeline`、`subscription list` 与 `search trending`
 - **Cookie 文件切勿提交到仓库**（已在 `.gitignore` 中排除）
 
 ---
@@ -231,9 +232,9 @@ A: 这些是从作者本机 Folo 订阅库导出的真实订阅（X 账号 + RSS
 - [x] GitHub 雷达（24h 排序 + 兜底）
 - [x] X 采集（cookie 管理 + 桥接）
 - [x] Markdown/HTML 报告生成
-- [ ] `export_folo_subscriptions.py` 升级为真实读取本地 Folo IndexedDB
+- [x] Folo 官方 CLI 登录、订阅、时间线与热门源读取
 - [ ] 支持 RSSHub 全局路由解析，扩大订阅源覆盖
-- [ ] 支持定时任务：每天固定时间自动生成早报
+- [x] 支持每天固定时间生成小红书图文早报审核包
 - [ ] 多云盘/邮件自动推送
 
 ---

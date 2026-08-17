@@ -1,43 +1,44 @@
 #!/usr/bin/env python3
-"""Export Folo RSS subscriptions."""
+"""Export authenticated Folo subscriptions through the official Folo CLI."""
 
 import json
+import shutil
+import subprocess
 import sys
-import os
+from pathlib import Path
 
 
 def export_subscriptions(output_path=None):
-    """
-    Placeholder to export Folo RSS subscriptions.
-    In a real implementation, this would read from Folo's local database
-    or API and output a formatted list.
-    """
-    subscriptions = {
-        "official_feeds": [
-            "https://openai.com/news/",
-            "https://www.anthropic.com/news",
-            "https://deepmind.google/discover/blog/",
-            "https://ai.meta.com/blog/",
-            "https://blogs.nvidia.com/",
-            "https://huggingface.co/blog",
-        ],
-        "news_feeds": [
-            "https://techcrunch.com/category/artificial-intelligence/feed/",
-            "https://venturebeat.com/category/ai/feed/",
-            "https://www.technologyreview.com/feed/",
-        ],
-        "hn_feed": "https://news.ycombinator.com/rss",
-        "arxiv_ai": "http://export.arxiv.org/rss/cs.AI",
-    }
+    npx = shutil.which("npx.cmd") or shutil.which("npx")
+    if not npx:
+        raise RuntimeError("npx is unavailable; install Node.js and npm first")
+
+    command = [npx, "--yes", "folocli@latest", "subscription", "list", "--format", "json"]
+    completed = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(completed.stderr.strip() or completed.stdout.strip() or "Folo CLI failed")
+
+    payload = json.loads(completed.stdout)
+    if not payload.get("ok"):
+        error = payload.get("error") or {}
+        raise RuntimeError(f"Folo CLI {error.get('code', 'ERROR')}: {error.get('message', '')}")
 
     if output_path:
-        with open(output_path, "w") as f:
-            json.dump(subscriptions, f, indent=2, ensure_ascii=False)
-        print(f"Exported subscriptions to {output_path}")
+        path = Path(output_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"Exported authenticated Folo subscriptions to {path}")
     else:
-        print(json.dumps(subscriptions, indent=2, ensure_ascii=False))
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
 
-    return subscriptions
+    return payload
 
 
 if __name__ == "__main__":

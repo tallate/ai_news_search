@@ -57,23 +57,24 @@ Use these families, adjusted to the user's time window (default: last 7 days, pr
 
 ## Multi-Agent Orchestration
 
-For comprehensive or multi-source requests, use subagents as the default execution model:
+For comprehensive or multi-source requests, use a two-wave subagent pipeline. A wave is complete only after every worker in that wave has returned or has been explicitly recorded as failed.
 
-1. Split collection into independent source tracks before searching.
-2. Inspect the available collaboration capacity and create as many useful subagents as the remaining slots allow. Prefer 2-4 concurrent workers; never create more workers than independent tracks.
-3. Give each subagent one bounded track, the user's topic and time window, the normalized item schema, and a completion criterion. Tell it to return findings to the parent rather than writing the final report.
-4. Start all workers before waiting. Keep one source family owned by one worker so searches do not duplicate each other.
-5. While workers run, let the parent prepare queries, ranking criteria, or cover an unassigned track. The parent owns synthesis.
-6. Wait for every worker, follow up once on missing evidence when useful, then merge, deduplicate, cross-check, rank, and write the final response.
+1. Inspect the available collaboration capacity. Keep the parent active and reuse worker slots between waves.
+2. Give each worker one bounded source family, the user's topic and time window, the normalized item schema, and the worker return contract below.
+3. Start **Wave 1** with these three independent workers:
+   - **Official/research worker** — official company pages, primary announcements, papers, regulation, and reputable reporting used for corroboration.
+   - **Public RSS/community worker** — public RSS feeds, Hacker News, Reddit, practitioner blogs, and other public community signals. Exclude authenticated Folo and X collection from this worker.
+   - **GitHub worker** — new and fast-rising repositories using `references/github-hot-repos.md` and the bundled scripts.
+4. Wait for all three Wave 1 workers. Follow up once on missing evidence when useful. Do not synthesize the final report yet.
+5. After the Wave 1 barrier, start **Wave 2** with two new workers, concurrently when capacity permits:
+   - **Folo worker** — use the official Folo CLI via `npx --yes folocli@latest`, filter the last 24 hours, and return personalized feed signals. Verify authentication with `whoami`, then use `timeline`, `subscription list`, and `search trending`. If CLI authentication is unavailable, read `references/ai-radar-sources.md`, query its public feeds, and return the access failure plus the fallback coverage.
+   - **X worker** — read `references/x-high-signal-accounts.txt`, validate cookies with `scripts/validate_X_cookies.py`, and collect high-signal account samples when authentication is valid. If authentication is unavailable, use public indexed X posts where possible and return the validation failure plus the fallback coverage.
+6. Wait for both Wave 2 workers. A worker that cannot authenticate is still complete only after it reports the attempted validation, failure reason, fallback sources checked, and resulting coverage gap.
+7. Merge all five worker results, deduplicate across waves, cross-check high-importance claims, rank the evidence, and only then write the final response.
 
-Use this default assignment when capacity permits:
+When capacity cannot run all workers in a wave concurrently, run the remaining workers as slots become free while preserving the Wave 1 → Wave 2 barrier. When subagent tools are unavailable, execute the same five tracks with staged parallel tool calls. Report unavailable or failed tracks as coverage limits; do not invent their findings.
 
-- **Official/research worker** — official company pages, primary announcements, papers, reputable public reporting.
-- **RSS/community worker** — RSS/Folo, Hacker News, Reddit, practitioner blogs, and corroborating community signals.
-- **GitHub worker** — new and fast-rising repositories using `references/github-hot-repos.md` and the bundled scripts.
-- **X worker** — only when the request needs social signals and authenticated access is available.
-
-For a narrow request that needs only one source family, search directly without subagents. When subagent tools are unavailable, execute the same tracks with parallel tool calls and continue normally. Report unavailable or failed tracks as coverage limits; do not invent their findings.
+For a narrow request that explicitly needs only one source family, search directly without the two-wave pipeline.
 
 ### Worker return contract
 
@@ -97,12 +98,17 @@ Assign these tracks to subagents using the orchestration above:
 3. Include funding, partnership, and hiring news from major AI companies
 4. Cross-check against X/Twitter for real-time signals
 
-### Track 2: RSS/Folo Subscriptions
+### Track 2: Public RSS, Community, and Folo
 
-1. Query known RSS subscriptions for new feed items in the last 24 hours
-2. Filter for AI-related content using the keywords above
-3. Deduplicate using content similarity before aggregating
-4. If Folo is unavailable without login, fall back to the feeds listed in `references/ai-radar-sources.md`
+Run this track with separate workers across the two-wave barrier:
+
+1. In Wave 1, query public RSS feeds, Hacker News, Reddit, and practitioner blogs for the last 24 hours.
+2. In Wave 2, make a distinct Folo/subscription attempt; do not treat the Wave 1 public RSS pass as proof that Folo was checked.
+3. Filter both result sets with the topic keywords and deduplicate them during parent synthesis.
+4. Follow the official CLI contract at `https://api.folo.is/skill.md`: prefer `npx --yes folocli@latest`, JSON output, and the stored config at `~/.folo/config.json`.
+5. Start with `whoami`; then query `timeline --limit 50`, `subscription list`, and `search trending --range 1d --language eng`. Paginate timeline results when `hasNext` is true and the reporting window needs more coverage.
+6. Never print or return the Folo session token. When CLI authentication is unavailable, record the attempted access and fall back to the feeds in `references/ai-radar-sources.md`.
+7. `opml export` is optional for backup/discovery. If the current CLI reports an internal serialization error, continue with `subscription list`; do not mark the whole Folo track failed.
 
 ### Track 3: GitHub Repository Radar
 
@@ -114,9 +120,9 @@ Assign these tracks to subagents using the orchestration above:
 
 See `references/github-hot-repos.md` for the full radar rules.
 
-### Track 4: X/Twitter Collection (Optional)
+### Track 4: X/Twitter Collection
 
-If the user asks for X/Twitter content or social signals:
+Run this track in Wave 2 for comprehensive daily or multi-source briefs. For narrow requests, run it only when the user asks for X/Twitter content or social signals.
 
 1. Load account list from `references/x-high-signal-accounts.txt`
 2. Validate X cookies first (`scripts/validate_X_cookies.py`); refresh via `scripts/ensure_X_cookies.sh` when needed
@@ -146,6 +152,7 @@ After the public-source, RSS/Folo, GitHub, and X tracks finish, merge and rank:
 - X collection requires a valid cookie file (`x_cookies.json`) when using xgo.ing RSS bridges or browser automation.
 - Validate cookies with `scripts/validate_X_cookies.py`; refresh them when expired (typically ~2-3 weeks).
 - Never commit cookie files to the repository; keep them out of version control.
+- On Windows, read `references/windows-authentication.md` before running Folo or X login and cookie recovery.
 
 ## Browser Collection Mode
 
@@ -171,7 +178,7 @@ Normalize each item to contain:
 
 Rules:
 - Validate a feed item against at least one other source when possible (don't rely on engagement alone)
-- If login is needed, use `scripts/export_folo_subscriptions.py` or cookie export helper
+- If Folo login is needed, run the official `npx --yes folocli@latest login` flow and verify with `whoami`; never request the session token in chat
 - Cross-check social posts against public sources whenever possible
 - Rank merged set by: source quality, freshness, originality, community momentum, engagement, and relevance to user's ask
 
@@ -266,7 +273,8 @@ Apply these filters to RSS feeds to reduce noise:
 
 **Confirmed failure modes**
 
-- Folo feeds are not available without login/cookies; fall back to public RSS.
+- Folo personalized data requires a valid CLI session in `~/.folo/config.json`; fall back to public RSS when `whoami` returns `UNAUTHORIZED`.
+- Folo CLI 0.0.5 may fail on `opml export` with an internal serialization error even when `whoami`, `subscription list`, `timeline`, and `search trending` work; treat OPML as optional and continue through the working commands.
 - Search result order is unreliable; cross-check against official pages.
 - Retrying on a single search page can miss content; use multiple query families.
 - Unsupported claims without stable source links must not be treated as confirmed facts.
@@ -307,7 +315,7 @@ Apply these filters to RSS feeds to reduce noise:
 - User wants comprehensive analysis → run all tracks, cross-check, and produce a detailed report.
 - User asks about GitHub topics/developer ecosystem → run the GitHub radar track and include repo signals.
 - User asks for X/news/social signals → validate cookies, run the X track, and cross-check with public sources.
-- Folo/RSS unavailable (no login) → fall back to official pages and public RSS feeds; note the limitation.
+- Folo CLI unavailable or unauthorized → fall back to official pages and public RSS feeds; note the limitation.
 
 ## Known Folo Coverage From This Machine
 
@@ -342,7 +350,10 @@ When the Folo list is missing or login is unavailable, add:
 
 Available helper scripts in `scripts/`:
 
-- `scripts/export_folo_subscriptions.py` - Export Folo RSS subscriptions (placeholder)
+- `scripts/export_folo_subscriptions.py` - Export the authenticated Folo subscription list through the official CLI
+- `scripts/folo_login_interactive.ps1` - Windows-safe interactive Folo CLI login and config verification
+- `scripts/complete_folo_login.ps1` - Local hidden-input fallback for applying a one-time Folo token
+- `scripts/open_X_login_cdp.ps1` / `scripts/export_X_cookies_cdp.py` - Windows X login and local CDP cookie export
 - `scripts/export_X_cookies.py` - Export X cookies from Chrome/Edge (macOS)
 - `scripts/validate_X_cookies.py` - Validate the X cookie file
 - `scripts/ensure_X_cookies.sh` - Validate -> login (CDP) -> export -> validate
@@ -358,6 +369,7 @@ Available helper scripts in `scripts/`:
 - `references/x-high-signal-accounts.txt` - High-signal X/Twitter accounts (Folo export)
 - `references/ai-radar-sources.md` - Official RSS sources and Folo-observed feeds
 - `references/github-hot-repos.md` - GitHub radar keywords, ranking, and cross-check rules
+- `references/windows-authentication.md` - Verified Windows Folo CLI and X cookie setup, recovery, and secret-handling rules
 
 ## Verification Guideline
 

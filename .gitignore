@@ -8,8 +8,9 @@ __pycache__/
 
 # Secrets — never commit X cookies
 x_cookies.json
+folo-subscriptions*.json
+folo-subscriptions*.opml
 
 # Local analysis artifacts (frames / OCR outputs)
 tmp_video/
 video_extract/
-
